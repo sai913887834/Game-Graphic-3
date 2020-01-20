@@ -3,10 +3,11 @@
 #include "Game.h"
 #include "Base/Mesh.h"
 #include "GameObjects/GameObject.h"
-#include "GameObjects/Camera.h"
-#include "GameObjects/Player.h"
+//#include "GameObjects/Camera.h"
+//#include "GameObjects/Player.h"
 #include "GameObjects/PlayerController.h"
 #include "GameObjects/ResourceManager.h"
+#include"GameObjects/SceneCube.h"
 
 
 using namespace fw;
@@ -20,9 +21,10 @@ Game::Game(Framework* pFramework)
     m_pMeshBox = nullptr;
     m_pTexture = 0;
 
-    m_pPlayer = nullptr;
-    m_pCamera = nullptr;
+   // m_pPlayer = nullptr;
+  //  m_pCamera = nullptr;
 
+    m_pSceneCube = nullptr;
     m_pController = new PlayerController();
 
     m_ResourceManager = new ResourceManager();
@@ -32,8 +34,9 @@ Game::~Game()
 {
     delete m_pController;
 
-    delete m_pPlayer;
-    delete m_pCamera;
+   // delete m_pPlayer;
+  //  delete m_pCamera;
+    delete m_pSceneCube;
 
     delete m_pTexture;
 
@@ -74,8 +77,10 @@ void Game::Init()
 
 
     // Create our GameObjects.
-    m_pPlayer = new Player( this, m_ResourceManager->GetMesh("Squre"), m_ResourceManager->GetShader("texture shader"), m_ResourceManager->GetTexture("MegaMan"), vec2( 0, 0 ), 0, m_pController );
-    m_pCamera = new Camera( this, vec2( 0, 0 ), vec2( 1/5.0f, 1/5.0f ) );
+   // m_pPlayer = new Player( this, m_ResourceManager->GetMesh("Squre"), m_ResourceManager->GetShader("texture shader"), m_ResourceManager->GetTexture("MegaMan"), vec2( 0, 0 ), 0, m_pController );
+  //  m_pCamera = new Camera( this, vec2( 0, 0 ), vec2( 1/5.0f, 1/5.0f ) );
+
+    m_pSceneCube = new SceneCube(this, m_ResourceManager->GetMesh("Squre"), m_ResourceManager->GetShader("texture shader"), m_ResourceManager->GetTexture("MegaMan"), vec2(0, 0), 0, m_pController, vec2(1 / 5.0f, 1 / 5.0f));
     m_ResourceManager->GetTexture("Megaman");
     //Create Physics world
     m_pPhysicsWorld = new PhysicsWorld2D();
@@ -97,8 +102,9 @@ void Game::Update(float deltaTime)
         wglSwapInterval( 1 );
 
     // Update objects.
-    m_pPlayer->Update( deltaTime );
-    m_pCamera->Update( deltaTime );
+   // m_pPlayer->Update( deltaTime );
+   // m_pCamera->Update( deltaTime );
+    m_pSceneCube->Update(deltaTime);
 }
 
 void Game::Draw()
@@ -112,7 +118,8 @@ void Game::Draw()
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
     // Draw our game objects.
-    m_pPlayer->Draw( m_pCamera );
+   // m_pPlayer->Draw( m_pCamera );
+    m_pSceneCube->Draw();
 
     m_pImGuiManager->EndFrame();
 }

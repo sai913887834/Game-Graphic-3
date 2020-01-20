@@ -2,13 +2,14 @@
 #define __Game_H__
 
 class Ball;
-class Camera;
+//class Camera;
 class GameObject;
 class ImGuiManager;
 class Mesh;
-class Player;
+//class Player;
 class PlayerController;
 class ResourceManager;
+class SceneCube;
 
 class Game : public fw::GameCore
 {
@@ -21,8 +22,11 @@ protected:
     Mesh* m_pMeshBox;
     fw::Texture* m_pTexture;
 
-    Player* m_pPlayer;
-    Camera* m_pCamera;
+    //Player* m_pPlayer;
+    //Camera* m_pCamera;
+    SceneCube* m_pSceneCube;
+
+
 
     PlayerController* m_pController;
     fw::PhysicsWorld* m_pPhysicsWorld;
