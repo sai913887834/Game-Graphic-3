@@ -1,6 +1,7 @@
 #include "GamePCH.h"
 #include "ResourceManager.h"
 #include "Base/Mesh.h"
+#include"Material.h"
 
 
 ResourceManager::ResourceManager()
@@ -30,6 +31,12 @@ ResourceManager::~ResourceManager()
     }
     m_Shader.clear();
 
+    for (auto it : m_Material) {
+
+        delete it.second;
+
+    }
+    m_Material.clear();
 }
 
 fw::Texture* ResourceManager::GetTexture(std::string name)
@@ -107,4 +114,28 @@ void ResourceManager::SetMesh(std::string name, Mesh* mesh)
     }
 }
 
+Material* ResourceManager::GetMaterial(std::string name)
+{
+    if (m_Material.find(name) == m_Material.end()) {
 
+
+        return nullptr;
+
+    }
+
+
+    return m_Material.at(name);
+}
+
+void ResourceManager::SetMaterial(std::string name, Material* material)
+{
+
+
+    assert(m_Material.find(name) == m_Material.end());
+    {
+
+        //m_Shader.insert(std::make_pair(name, shader));
+        m_Material[name] = material;
+
+    }
+}
