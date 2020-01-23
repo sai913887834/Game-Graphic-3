@@ -9,6 +9,7 @@ public:
     virtual void Update(float Delta) = 0;
     virtual void Init() = 0;
     virtual void Draw() = 0;
+    void LoadFromFile(const char* filename);
 
 private:
 

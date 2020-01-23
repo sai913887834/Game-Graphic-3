@@ -45,7 +45,7 @@ void Mesh::Init(VertexFormat* pVerts, unsigned int numVerts, GLenum primitiveTyp
     Init( pVerts, numVerts, nullptr, 0, primitiveType, GL_STATIC_DRAW );
 }
 
-void Mesh::Draw(Camera* pCamera, ShaderProgram* pShader, vec2 pos, fw::Texture* pTexture)
+void Mesh::Draw(Camera* pCamera, ShaderProgram* pShader, vec3 pos, fw::Texture* pTexture)
 {
     assert( m_PrimitiveType != -1 );
     assert( m_NumVerts != 0 );

@@ -5,14 +5,47 @@
 
 namespace fw
 {
+
+    class Box2DContactListener : public b2ContactListener {
+
+
+
+        virtual void BeginContact(b2Contact* contact) override;
+
+        /// Called when two fixtures cease to touch.
+        virtual void EndContact(b2Contact* contact) override;
+
+
+    };
+
+     void Box2DContactListener::BeginContact(b2Contact* contact) {
+
+
+         int a = 1;
+     
+     }
+
+
+     void Box2DContactListener::EndContact(b2Contact* contact) {
+
+     }
+
+
     PhysicsWorld2D::PhysicsWorld2D()
     {
         m_pWorld = new b2World( b2Vec2( 0, -10 ) );
+
+        m_pContactListener = new Box2DContactListener();
+        m_pWorld->SetContactListener(m_pContactListener);
+
+
+
     }
 
     PhysicsWorld2D::~PhysicsWorld2D()
     {
         delete m_pWorld;
+        delete m_pContactListener;
     }
 
     void PhysicsWorld2D::Update(float deltaTime)
@@ -33,6 +66,11 @@ namespace fw
         bodydef.userData = this;
     
         //m_pBody = m_pScene->GetPhysicsManager()->GetWorld()->CreateBody( &bodydef );
-        return nullptr;
+
+        b2Body* pBody = m_pWorld->CreateBody(&bodydef);
+
+        PhysicsBody2D* pPhysicsBody = new PhysicsBody2D(pBody);
+
+        return pPhysicsBody;
     }
 }

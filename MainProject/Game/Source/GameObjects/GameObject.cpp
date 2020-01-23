@@ -6,7 +6,7 @@
 
 using namespace fw;
 
-GameObject::GameObject(Game* pGame, Mesh* pMesh, ShaderProgram* pShader, fw::Texture* pTexture, vec2 position)
+GameObject::GameObject(Game* pGame, Mesh* pMesh, ShaderProgram* pShader, fw::Texture* pTexture, vec3 position)
 : m_pGame( pGame )
 , m_pMesh( pMesh )
 , m_pShader( pShader )
@@ -14,14 +14,19 @@ GameObject::GameObject(Game* pGame, Mesh* pMesh, ShaderProgram* pShader, fw::Tex
 , m_Position( position )
 , m_Radius( 2 )
 {
+  
+    m_pBody = nullptr;
 }
 
 GameObject::~GameObject()
 {
+    delete m_pBody;
 }
 
 void GameObject::Update(float deltaTime)
 {
+  if(m_pBody != nullptr)
+    m_Position = m_pBody->GetPosition();
 }
 
 void GameObject::Draw(Camera* pCamera)

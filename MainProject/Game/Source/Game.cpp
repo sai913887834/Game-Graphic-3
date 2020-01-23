@@ -52,7 +52,7 @@ Game::~Game()
 
 void Game::Init()
 {
-    m_pImGuiManager = new ImGuiManager();
+    m_pImGuiManager = new fw::ImGuiManager();
     m_pImGuiManager->Init();
 
     // Turn on v-sync.
@@ -80,10 +80,13 @@ void Game::Init()
    // m_pPlayer = new Player( this, m_ResourceManager->GetMesh("Squre"), m_ResourceManager->GetShader("texture shader"), m_ResourceManager->GetTexture("MegaMan"), vec2( 0, 0 ), 0, m_pController );
   //  m_pCamera = new Camera( this, vec2( 0, 0 ), vec2( 1/5.0f, 1/5.0f ) );
 
-    m_pSceneCube = new SceneCube(this, m_ResourceManager->GetMesh("Squre"), m_ResourceManager->GetShader("texture shader"), m_ResourceManager->GetTexture("MegaMan"), vec2(0, 0), 0, m_pController, vec2(1 / 5.0f, 1 / 5.0f));
-    m_ResourceManager->GetTexture("Megaman");
-    //Create Physics world
+     //Create Physics world
     m_pPhysicsWorld = new PhysicsWorld2D();
+
+    m_pSceneCube = new SceneCube(this, m_ResourceManager->GetMesh("Squre"), m_ResourceManager->GetShader("texture shader"), m_ResourceManager->GetTexture("MegaMan"), vec2(0, 0), 0, m_pController, vec2(1 / 5.0f, 1 / 5.0f));
+    
+    m_ResourceManager->GetTexture("Megaman");
+   
 }
 
 void Game::OnEvent(Event* pEvent)
@@ -102,9 +105,11 @@ void Game::Update(float deltaTime)
         wglSwapInterval( 1 );
 
     // Update objects.
+    m_pPhysicsWorld->Update(deltaTime);
    // m_pPlayer->Update( deltaTime );
    // m_pCamera->Update( deltaTime );
     m_pSceneCube->Update(deltaTime);
+
 }
 
 void Game::Draw()
@@ -124,7 +129,9 @@ void Game::Draw()
     m_pImGuiManager->EndFrame();
 }
 
-//PhysicsWorld* Game::GetPhysicsWorld()
-//{
-  //  return m_pPhysicsWorld;
-//}
+
+
+PhysicsWorld* Game::GetPhysicsWorld()
+{
+    return m_pPhysicsWorld;
+}

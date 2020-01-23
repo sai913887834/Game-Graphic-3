@@ -14,7 +14,7 @@ class SceneCube;
 class Game : public fw::GameCore
 {
 protected:
-    ImGuiManager* m_pImGuiManager;
+    fw::ImGuiManager* m_pImGuiManager;
 
     ResourceManager* m_ResourceManager;
 
@@ -39,7 +39,7 @@ public:
     virtual void OnEvent(fw::Event* pEvent) override;
     virtual void Update(float deltaTime) override;
     virtual void Draw() override;
-   // PhysicsWorld* GetPhysicsWorld();
+    fw::PhysicsWorld* GetPhysicsWorld();
 
 };
 

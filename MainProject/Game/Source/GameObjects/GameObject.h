@@ -11,17 +11,18 @@ protected:
     Mesh* m_pMesh;
     fw::ShaderProgram* m_pShader;
     fw::Texture* m_pTexture;
-    vec2 m_Position;
+    vec3 m_Position;
     float m_Radius;
+    fw::PhysicsBody* m_pBody;
 
 public:
-    GameObject(Game* pGame, Mesh* pMesh, fw::ShaderProgram* pShader, fw::Texture* pTexture, vec2 position);
+    GameObject(Game* pGame, Mesh* pMesh, fw::ShaderProgram* pShader, fw::Texture* pTexture, vec3 position);
     ~GameObject();
 
-    vec2 GetPosition() { return m_Position; }
+    vec3 GetPosition() { return m_Position; }
     float GetRadius() { return m_Radius; }
 
-    void SetPosition(vec2 pos) { m_Position = pos; }
+    void SetPosition(vec3 pos) { m_Position = pos; }
 
     virtual void Update(float deltaTime);
     virtual void Draw(Camera* pCamera);
