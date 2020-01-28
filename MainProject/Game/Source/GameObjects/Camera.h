@@ -11,7 +11,7 @@ protected:
     vec2 m_ProjectionScale;
 
 public:
-    Camera(Game* pGame, vec2 position, vec2 projectionScale);
+    Camera(Game* pGame, vec3 position, vec2 projectionScale);
     ~Camera();
 
     vec2 GetProjectionScale() { return m_ProjectionScale; }

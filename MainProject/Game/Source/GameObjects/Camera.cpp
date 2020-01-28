@@ -7,7 +7,7 @@
 
 using namespace fw;
 
-Camera::Camera(Game* pGame, vec2 position, vec2 projectionScale)
+Camera::Camera(Game* pGame, vec3 position, vec2 projectionScale)
 : GameObject( pGame, nullptr, nullptr, 0, position )
 , m_ProjectionScale( projectionScale )
 {

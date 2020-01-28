@@ -52,6 +52,7 @@ Game::~Game()
 
 void Game::Init()
 {
+	glEnable(GL_DEPTH_TEST);
     m_pImGuiManager = new ImGuiManager();
     m_pImGuiManager->Init();
 
@@ -65,22 +66,22 @@ void Game::Init()
 
     // Create our meshes.
     m_pMeshBox = new Mesh();
-    m_pMeshBox->CreateBox( vec2(1,1), vec2(0,0) );
+    m_pMeshBox->CreateBox( vec3(1,1,1), vec3(0,0,0) );
 
     // Load our textures.
-    m_pTexture = new Texture( "Data/Textures/Megaman.png" );
+    m_pTexture = new Texture( "Data/Textures/dice.png" );
 
 
     m_ResourceManager->SetMesh("Squre", m_pMeshBox);
     m_ResourceManager->SetShaderProgram("texture shader", m_pShaderTexture);
-    m_ResourceManager->SetTexture("MegaMan", m_pTexture);
+    m_ResourceManager->SetTexture("dice", m_pTexture);
 
 
     // Create our GameObjects.
    // m_pPlayer = new Player( this, m_ResourceManager->GetMesh("Squre"), m_ResourceManager->GetShader("texture shader"), m_ResourceManager->GetTexture("MegaMan"), vec2( 0, 0 ), 0, m_pController );
   //  m_pCamera = new Camera( this, vec2( 0, 0 ), vec2( 1/5.0f, 1/5.0f ) );
 
-    m_pSceneCube = new SceneCube(this, m_ResourceManager->GetMesh("Squre"), m_ResourceManager->GetShader("texture shader"), m_ResourceManager->GetTexture("MegaMan"), vec2(0, 0), 0, m_pController, vec2(1 / 5.0f, 1 / 5.0f));
+    m_pSceneCube = new SceneCube(this, m_ResourceManager->GetMesh("Squre"), m_ResourceManager->GetShader("texture shader"), m_ResourceManager->GetTexture("dice"), vec2(0, 0), 0, m_pController, vec2(1 / 5.0f, 1 / 5.0f));
     m_ResourceManager->GetTexture("Megaman");
     //Create Physics world
     m_pPhysicsWorld = new PhysicsWorld2D();
@@ -119,6 +120,7 @@ void Game::Draw()
 
     // Draw our game objects.
    // m_pPlayer->Draw( m_pCamera );
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     m_pSceneCube->Draw();
 
     m_pImGuiManager->EndFrame();

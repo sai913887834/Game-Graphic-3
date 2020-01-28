@@ -8,7 +8,7 @@
 
 using namespace fw;
 
-Player::Player(Game* pGame, Mesh* pMesh, fw::ShaderProgram* pShader, fw::Texture* pTexture, vec2 position, int playerNum, PlayerController* pController)
+Player::Player(Game* pGame, Mesh* pMesh, fw::ShaderProgram* pShader, fw::Texture* pTexture, vec3 position, int playerNum, PlayerController* pController)
 : GameObject( pGame, pMesh, pShader, pTexture, position )
 , m_PlayerNumber( playerNum )
 , m_pController( pController )
@@ -24,17 +24,23 @@ void Player::Update(float deltaTime)
 {
     //GameObject::Update( deltaTime, pFramework );
 
-    float speed = 10;
+    float speed = 100;
     vec2 dir( 0, 0 );
 
-    if( m_pController->m_Up )
-        dir.y = 1;
-    if( m_pController->m_Down )
-        dir.y = -1;
+	if (m_pController->m_Up)
+		   dir.y = 1;
+		//m_pMesh->rotationX -= speed*deltaTime;
+	
+	if (m_pController->m_Down)
+		 dir.y = -1;
+		//m_pMesh->rotationX += speed * deltaTime;
     if( m_pController->m_Left )
-        dir.x = -1;
+       dir.x = -1;
+
+		//m_pMesh->rotationY += speed * deltaTime;
     if( m_pController->m_Right )
         dir.x = 1;
+		//m_pMesh->rotationX -= speed * deltaTime;
 
     m_Position += dir * speed * deltaTime;
 }

@@ -1,6 +1,6 @@
 #version 120
 
-attribute vec2 a_Position;
+attribute vec3 a_Position;
 attribute vec2 a_UV;
 
 uniform mat4 u_WorldMat;
@@ -12,7 +12,7 @@ varying vec2 v_UV;
 
 void main()
 {
-    vec4 objectPos = vec4(a_Position,0,1); 
+    vec4 objectPos = vec4(a_Position,1); 
 
 	vec4  worldPos = u_WorldMat *objectPos;
     vec4    viewPos = worldPos + vec4(u_CameraTranslation,0,0);
