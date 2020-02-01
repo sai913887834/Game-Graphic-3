@@ -8,6 +8,7 @@
 #include "GameObjects/PlayerController.h"
 #include "GameObjects/ResourceManager.h"
 #include"GameObjects/SceneCube.h"
+#include"GameObjects/Scene.h"
 
 
 using namespace fw;
@@ -28,6 +29,8 @@ Game::Game(Framework* pFramework)
     m_pController = new PlayerController();
 
     m_ResourceManager = new ResourceManager();
+
+    m_Scene = new Scene(this, m_pPhysicsWorld,  false);
 }
 
 Game::~Game()
@@ -48,10 +51,13 @@ Game::~Game()
     delete m_pPhysicsWorld;
 
     delete m_ResourceManager;
+
+    delete m_Scene;
 }
 
 void Game::Init()
 {
+	glEnable(GL_DEPTH_TEST);
     m_pImGuiManager = new ImGuiManager();
     m_pImGuiManager->Init();
 
@@ -60,35 +66,36 @@ void Game::Init()
 
     // Create our shaders.
     m_pShaderTexture = new ShaderProgram( "Data/Shaders/texture.vert", "Data/Shaders/texture.frag" );
-
+    m_Scene->LoadScene("Data/Scene/Simple.box2dscene");
 
 
     // Create our meshes.
     m_pMeshBox = new Mesh();
-    m_pMeshBox->CreateBox( vec2(1,1), vec2(0,0) );
+    m_pMeshBox->CreateBox( vec3(1,1,1), vec3(0,0,0) );
 
     // Load our textures.
-    m_pTexture = new Texture( "Data/Textures/Megaman.png" );
+    m_pTexture = new Texture( "Data/Textures/dice.png" );
 
 
     m_ResourceManager->SetMesh("Squre", m_pMeshBox);
     m_ResourceManager->SetShaderProgram("texture shader", m_pShaderTexture);
-    m_ResourceManager->SetTexture("MegaMan", m_pTexture);
+    m_ResourceManager->SetTexture("dice", m_pTexture);
 
 
     // Create our GameObjects.
    // m_pPlayer = new Player( this, m_ResourceManager->GetMesh("Squre"), m_ResourceManager->GetShader("texture shader"), m_ResourceManager->GetTexture("MegaMan"), vec2( 0, 0 ), 0, m_pController );
   //  m_pCamera = new Camera( this, vec2( 0, 0 ), vec2( 1/5.0f, 1/5.0f ) );
-
-    m_pSceneCube = new SceneCube(this, m_ResourceManager->GetMesh("Squre"), m_ResourceManager->GetShader("texture shader"), m_ResourceManager->GetTexture("MegaMan"), vec2(0, 0), 0, m_pController, vec2(1 / 5.0f, 1 / 5.0f));
+	m_pPhysicsWorld = new PhysicsWorld2D();
+    m_pSceneCube = new SceneCube(this, m_ResourceManager->GetMesh("Squre"), m_ResourceManager->GetShader("texture shader"), m_ResourceManager->GetTexture("dice"), vec3(0, 0,0), 0, m_pController, vec2(1 / 5.0f, 1 / 5.0f));
     m_ResourceManager->GetTexture("Megaman");
     //Create Physics world
-    m_pPhysicsWorld = new PhysicsWorld2D();
+    
 }
 
 void Game::OnEvent(Event* pEvent)
 {
     m_pController->OnEvent( pEvent );
+	//m_pImGuiManager->OnEvent(pEvent);
 }
 
 void Game::Update(float deltaTime)
@@ -105,6 +112,7 @@ void Game::Update(float deltaTime)
    // m_pPlayer->Update( deltaTime );
    // m_pCamera->Update( deltaTime );
     m_pSceneCube->Update(deltaTime);
+	m_pPhysicsWorld->Update(deltaTime);
 }
 
 void Game::Draw()
@@ -119,9 +127,15 @@ void Game::Draw()
 
     // Draw our game objects.
    // m_pPlayer->Draw( m_pCamera );
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     m_pSceneCube->Draw();
 
     m_pImGuiManager->EndFrame();
+}
+
+PhysicsWorld* Game::GetPhysicsWorld()
+{
+	return m_pPhysicsWorld;
 }
 
 //PhysicsWorld* Game::GetPhysicsWorld()

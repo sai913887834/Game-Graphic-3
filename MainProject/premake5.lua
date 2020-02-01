@@ -28,6 +28,7 @@ project "Game"
         "Game/Source/**.h",
         "Data/Shaders/**.vert",
         "Data/Shaders/**.frag",
+		"Data/Scene/**.box2dscene",
         "premake5.lua",
         "GenerateBuildFiles.bat",
         ".gitignore",
@@ -75,6 +76,8 @@ project "Framework"
         "Libraries/Framework/Libraries/LodePNG/lodepng.h",
 		   "Libraries/Framework/Libraries/Box2D/**.cpp",
         "Libraries/Framework/Libraries/Box2D/**.h",
+		 "Libraries/Framework/Libraries/cJSON/cJSON.c",
+        "Libraries/Framework/Libraries/cJSON/cJSON.h",
     }
 
    filter "configurations:Debug"

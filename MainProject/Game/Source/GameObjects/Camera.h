@@ -8,13 +8,17 @@ class Game;
 class Camera : public GameObject
 {
 protected:
-    vec2 m_ProjectionScale;
-
+   // vec2 m_ProjectionScale;
+	mat4 m_ProjMatrix;
+	mat4 m_ViewMatrix;
 public:
-    Camera(Game* pGame, vec2 position, vec2 projectionScale);
+    Camera(Game* pGame, vec3 position, vec2 projectionScale);
     ~Camera();
 
-    vec2 GetProjectionScale() { return m_ProjectionScale; }
+	mat4 GetProjectionMatrix() { return m_ProjMatrix; }
+	mat4 GetViewMatrix() { return m_ViewMatrix; }
+
+
 };
 
 #endif //__Camera_H__
