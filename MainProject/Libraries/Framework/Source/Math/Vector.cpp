@@ -9,8 +9,4 @@
 
 #include "FrameworkPCH.h"
 
-namespace fw
-{
-}
-
-// nothing here.
+// Nothing here.

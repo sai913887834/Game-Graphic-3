@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2012-2015 Jimmy Lord http://www.flatheadgames.com
+// Copyright (c) 2012-2017 Jimmy Lord http://www.flatheadgames.com
 //
 // This software is provided 'as-is', without any express or implied warranty.  In no event will the authors be held liable for any damages arising from the use of this software.
 // Permission is granted to anyone to use this software for any purpose, including commercial applications, and to alter it and redistribute it freely, subject to the following restrictions:
@@ -8,8 +8,6 @@
 // 3. This notice may not be removed or altered from any source distribution.
 
 #include "FrameworkPCH.h"
-#include "Vector.h"
-#include "MyMatrix.h"
 
 namespace fw
 {
@@ -74,6 +72,14 @@ namespace fw
         m44 = 1;
     }
 
+    void MyMatrix::CreateRotation(Vector3 eulerdegrees)
+    {
+        SetIdentity();
+        Rotate( eulerdegrees.z, 0, 0, 1 ); // roll
+        Rotate( eulerdegrees.x, 1, 0, 0 ); // pitch
+        Rotate( eulerdegrees.y, 0, 1, 0 ); // yaw
+    }
+
     void MyMatrix::CreateTranslation(float x, float y, float z)
     {
         m12 = m13 = m14 = m21 = m23 = m24 = m31 = m32 = m34 = 0;
@@ -111,14 +117,6 @@ namespace fw
         Translate( pos.x, pos.y, pos.z );
     }
 
-    //void MyMatrix::CreateSRT(Vector3 scale, MyQuat rot, Vector3 pos)
-    //{
-    //    SetIdentity();
-    //    Scale( scale.x, scale.y, scale.z );
-    //    Rotate( rot );
-    //    Translate( pos.x, pos.y, pos.z );
-    //}
-
     void MyMatrix::Scale(float scale)
     {
         m11 *= scale; m21 *= scale; m31 *= scale; m41 *= scale;
@@ -133,18 +131,25 @@ namespace fw
         m13 *= sz; m32 *= sz; m33 *= sz; m43 *= sz;
     }
 
+    void MyMatrix::Scale(Vector3 scale)
+    {
+        m11 *= scale.x; m21 *= scale.x; m31 *= scale.x; m41 *= scale.x;
+        m12 *= scale.y; m22 *= scale.y; m32 *= scale.y; m42 *= scale.y;
+        m13 *= scale.z; m32 *= scale.z; m33 *= scale.z; m43 *= scale.z;
+    }
+
     void MyMatrix::Rotate(float angle, float x, float y, float z)
     {
         float sinAngle, cosAngle;
         float mag = sqrtf(x * x + y * y + z * z);
-      
+
         sinAngle = sinf( angle * PI / 180.0f );
         cosAngle = cosf( angle * PI / 180.0f );
         if( mag > 0.0f )
         {
             float xx, yy, zz, xy, yz, zx, xs, ys, zs;
             float oneMinusCos;
-   
+
             x /= mag;
             y /= mag;
             z /= mag;
@@ -184,33 +189,6 @@ namespace fw
             *this = rotMat * *this;
         }
     }
-
-    //void MyMatrix::Rotate(MyQuat q)
-    //{
-    //    MyMatrix rotMat;
-
-    //    rotMat.m11 = 1.0f - 2.0f*q.y*q.y - 2.0f*q.z*q.z;
-    //    rotMat.m12 =        2.0f*q.x*q.y + 2.0f*q.z*q.w;
-    //    rotMat.m13 =        2.0f*q.x*q.z - 2.0f*q.y*q.w;
-    //    rotMat.m14 = 0.0f;
-
-    //    rotMat.m21 =        2.0f*q.x*q.y - 2.0f*q.z*q.w;
-    //    rotMat.m22 = 1.0f - 2.0f*q.x*q.x - 2.0f*q.z*q.z;
-    //    rotMat.m23 =        2.0f*q.y*q.z + 2.0f*q.x*q.w;
-    //    rotMat.m24 = 0.0f;
-
-    //    rotMat.m31 =        2.0f*q.x*q.z + 2.0f*q.y*q.w;
-    //    rotMat.m32 =        2.0f*q.y*q.z - 2.0f*q.x*q.w;
-    //    rotMat.m33 = 1.0f - 2.0f*q.x*q.x - 2.0f*q.y*q.y;
-    //    rotMat.m34 = 0.0f;
-
-    //    rotMat.m41 = 0.0f; 
-    //    rotMat.m42 = 0.0f;
-    //    rotMat.m43 = 0.0f; 
-    //    rotMat.m44 = 1.0f;
-
-    //    *this = rotMat * *this;
-    //}
 
     void MyMatrix::TranslatePreRotScale(Vector3 translate)
     {
@@ -273,8 +251,8 @@ namespace fw
     void MyMatrix::CreatePerspectiveVFoV(float vertfovdegrees, float aspect, float nearZ, float farZ)
     {
         GLfloat frustumRight, frustumTop;
-   
-        frustumTop = tanf( vertfovdegrees/2 / 180.0f * PI ) * nearZ;
+
+        frustumTop = tanf( vertfovdegrees/2 * PI/180.0f ) * nearZ;
         frustumRight = frustumTop * aspect;
 
         CreateFrustum( -frustumRight, frustumRight, -frustumTop, frustumTop, nearZ, farZ );
@@ -283,8 +261,8 @@ namespace fw
     void MyMatrix::CreatePerspectiveHFoV(float horfovdegrees, float aspect, float nearZ, float farZ)
     {
         GLfloat frustumRight, frustumTop;
-   
-        frustumRight = tanf( horfovdegrees/2 / 180.0f * PI ) * nearZ;
+
+        frustumRight = tanf( horfovdegrees/2 * PI/180.0f ) * nearZ;
         frustumTop = frustumRight / aspect;
 
         CreateFrustum( -frustumRight, frustumRight, -frustumTop, frustumTop, nearZ, farZ );
@@ -317,22 +295,15 @@ namespace fw
         m44 = 1;
     }
 
-    void MyMatrix::CreateLookAtViewLeftHanded(const Vector3 &eye, const Vector3 &up, const Vector3 &at)
-    {
-        Vector3 zaxis = (at - eye).Normalize();
-        Vector3 xaxis = (up.Cross(zaxis)).Normalize();
-        Vector3 yaxis = zaxis.Cross(xaxis);
-
-        Vector3 pos = Vector3( -xaxis.Dot( eye ), -yaxis.Dot( eye ), -zaxis.Dot( eye ) );
-
-        SetAxesView( xaxis, yaxis, zaxis, pos );
-    }
-
     void MyMatrix::CreateLookAtView(const Vector3 &eye, const Vector3 &up, const Vector3 &at)
     {
+    #if MYFW_RIGHTHANDED
         Vector3 zaxis = (eye - at).Normalize();
-        Vector3 xaxis = (up.Cross(zaxis)).Normalize();
-        Vector3 yaxis = zaxis.Cross(xaxis);
+    #else
+        Vector3 zaxis = (at - eye).Normalize();
+    #endif
+        Vector3 xaxis = (up.Cross( zaxis )).Normalize();
+        Vector3 yaxis = zaxis.Cross( xaxis );
 
         Vector3 pos = Vector3( -xaxis.Dot( eye ), -yaxis.Dot( eye ), -zaxis.Dot( eye ) );
 
@@ -426,4 +397,4 @@ namespace fw
     {
         return Vector3( m31, m32, m33 );
     }
-};
+}

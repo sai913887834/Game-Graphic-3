@@ -9,7 +9,11 @@ class Mesh;
 //class Player;
 class PlayerController;
 class ResourceManager;
+class Scene;
 class SceneCube;
+class ObjectPool;
+class PhysicsScene;
+#include"Base/ObjectPool.h"
 
 class Game : public fw::GameCore
 {
@@ -25,11 +29,14 @@ protected:
     //Player* m_pPlayer;
     //Camera* m_pCamera;
     SceneCube* m_pSceneCube;
-
+	PhysicsScene* m_pPhysicsScene;
+    Pool<GameObject*> m_testpool;
 
 
     PlayerController* m_pController;
     fw::PhysicsWorld* m_pPhysicsWorld;
+
+    Scene* m_Scene;
 
 public:
     Game(fw::Framework* pFramework);
@@ -39,7 +46,7 @@ public:
     virtual void OnEvent(fw::Event* pEvent) override;
     virtual void Update(float deltaTime) override;
     virtual void Draw() override;
-   // PhysicsWorld* GetPhysicsWorld();
+    fw::PhysicsWorld* GetPhysicsWorld();
 
 };
 

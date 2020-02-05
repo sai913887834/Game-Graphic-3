@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2012-2015 Jimmy Lord http://www.flatheadgames.com
+// Copyright (c) 2012-2017 Jimmy Lord http://www.flatheadgames.com
 //
 // This software is provided 'as-is', without any express or implied warranty.  In no event will the authors be held liable for any damages arising from the use of this software.
 // Permission is granted to anyone to use this software for any purpose, including commercial applications, and to alter it and redistribute it freely, subject to the following restrictions:
@@ -30,13 +30,13 @@ namespace fw
         //    , m13(at.x),    m23(at.y),    m33(at.z),    m43(pos.z),
         //    , m14(0),       m24(0),       m34(0),       m44(1)      {}
         MyMatrix(float v11, float v12, float v13, float v14,
-                 float v21, float v22, float v23, float v24,
-                 float v31, float v32, float v33, float v34,
-                 float v41, float v42, float v43, float v44)
-            : m11(v11), m21(v21), m31(v31), m41(v41)
-            , m12(v12), m22(v22), m32(v32), m42(v42)
-            , m13(v13), m23(v23), m33(v33), m43(v43)
-            , m14(v14), m24(v24), m34(v34), m44(v44) {}
+            float v21, float v22, float v23, float v24,
+            float v31, float v32, float v33, float v34,
+            float v41, float v42, float v43, float v44)
+            : m11(v11), m12(v12), m13(v13), m14(v14)
+            , m21(v21), m22(v22), m23(v23), m24(v24)
+            , m31(v31), m32(v32), m33(v33), m34(v34)
+            , m41(v41), m42(v42), m43(v43), m44(v44) {}
         // Added this copy constuctor when I was having issue with Android(gcc), didn't end up using it and it shouldn't be needed.
         //MyMatrix(const MyMatrix& o)
         //    : m11(o.m11), m21(o.m21), m31(o.m31), m41(o.m41)
@@ -44,17 +44,17 @@ namespace fw
         //    , m13(o.m13), m23(o.m23), m33(o.m33), m43(o.m43)
         //    , m14(o.m14), m24(o.m24), m34(o.m34), m44(o.m44) {}
 
-        // the following function will affect existing values in the matrix
+        // The following functions will affect existing values in the matrix.
         void Scale(float scale);
         void Scale(float sx, float sy, float sz);
+        void Scale(Vector3 scale);
         void Rotate(float angle, float x, float y, float z);
-        //void Rotate(MyQuat q);
         void TranslatePreRotScale(Vector3 translate);
         void TranslatePreRotScale(float tx, float ty, float tz);
         void Translate(Vector3 pos);
         void Translate(float x, float y, float z);
 
-        // all create/set functions will overright values in the matrix
+        // All create/set functions will overright values in the matrix.
         void SetIdentity();
         void SetAxesView(const Vector3& right, const Vector3& up, const Vector3& at, const Vector3& pos);
         void SetAxesWorld(const Vector3& right, const Vector3& up, const Vector3& at, const Vector3& pos);
@@ -63,20 +63,19 @@ namespace fw
         void CreateScale(float scale);
         void CreateScale(float x, float y, float z);
         void CreateScale(Vector3 scale);
+        void CreateRotation(Vector3 eulerdegrees);
         void CreateTranslation(float x, float y, float z);
         void CreateTranslation(Vector3 pos);
         void CreateSRT(float scale, Vector3 rot, Vector3 pos);
         void CreateSRT(Vector3 scale, Vector3 rot, Vector3 pos);
-        //void CreateSRT(Vector3 scale, MyQuat rot, Vector3 pos);
         void CreateFrustum(float left, float right, float bottom, float top, float nearZ, float farZ);
         void CreatePerspectiveVFoV(float vertfovdegrees, float aspect, float nearZ, float farZ);
         void CreatePerspectiveHFoV(float horfovdegrees, float aspect, float nearZ, float farZ);
         void CreateOrtho(float left, float right, float bottom, float top, float nearZ, float farZ);
-        void CreateLookAtViewLeftHanded(const Vector3& eye, const Vector3& up, const Vector3& at);
         void CreateLookAtView(const Vector3& eye, const Vector3& up, const Vector3& at);
         void CreateLookAtWorld(const Vector3& eye, const Vector3& up, const Vector3& at);
 
-        // get values from matrix
+        // Get values from matrix.
         Vector3 GetTranslation() { return Vector3( m41, m42, m43 ); }
         Vector3 GetEulerAngles();
         Vector3 GetScale();
@@ -111,9 +110,9 @@ namespace fw
         inline Vector2 operator *(const Vector2 o) const
         {
             Vector4 result = Vector4( m11 * o.x + m21 * o.y + 0 + m41 * 1,
-                                      m12 * o.x + m22 * o.y + 0 + m42 * 1,
-                                      m13 * o.x + m23 * o.y + 0 + m43 * 1,
-                                      m14 * o.x + m24 * o.y + 0 + m44 * 1 );
+                m12 * o.x + m22 * o.y + 0 + m42 * 1,
+                m13 * o.x + m23 * o.y + 0 + m43 * 1,
+                m14 * o.x + m24 * o.y + 0 + m44 * 1 );
             if( result.w )
                 return Vector2( result.x/result.w, result.y/result.w );
             else
@@ -123,9 +122,9 @@ namespace fw
         inline Vector3 operator *(const Vector3 o) const
         {
             Vector4 result = Vector4( m11 * o.x + m21 * o.y + m31 * o.z + m41 * 1,
-                                      m12 * o.x + m22 * o.y + m32 * o.z + m42 * 1,
-                                      m13 * o.x + m23 * o.y + m33 * o.z + m43 * 1,
-                                      m14 * o.x + m24 * o.y + m34 * o.z + m44 * 1 );
+                m12 * o.x + m22 * o.y + m32 * o.z + m42 * 1,
+                m13 * o.x + m23 * o.y + m33 * o.z + m43 * 1,
+                m14 * o.x + m24 * o.y + m34 * o.z + m44 * 1 );
             if( result.w )
                 return Vector3( result.x/result.w, result.y/result.w, result.z/result.w );
             else
@@ -135,9 +134,9 @@ namespace fw
         inline Vector4 operator *(const Vector4 o) const
         {
             return Vector4( m11 * o.x + m21 * o.y + m31 * o.z + m41 * o.w,
-                            m12 * o.x + m22 * o.y + m32 * o.z + m42 * o.w,
-                            m13 * o.x + m23 * o.y + m33 * o.z + m43 * o.w,
-                            m14 * o.x + m24 * o.y + m34 * o.z + m44 * o.w );
+                m12 * o.x + m22 * o.y + m32 * o.z + m42 * o.w,
+                m13 * o.x + m23 * o.y + m33 * o.z + m43 * o.w,
+                m14 * o.x + m24 * o.y + m34 * o.z + m44 * o.w );
         }
 
         inline MyMatrix operator *(const MyMatrix o) const
@@ -160,13 +159,13 @@ namespace fw
             newmat.m42 = this->m12 * o.m41 + this->m22 * o.m42 + this->m32 * o.m43 + this->m42 * o.m44;
             newmat.m43 = this->m13 * o.m41 + this->m23 * o.m42 + this->m33 * o.m43 + this->m43 * o.m44;
             newmat.m44 = this->m14 * o.m41 + this->m24 * o.m42 + this->m34 * o.m43 + this->m44 * o.m44;
-    
+
             return newmat;
         }
 
         bool Inverse(float tolerance = 0.0001f)
         {
-            // Determinants of 2x2 submatrices
+            // Determinants of 2x2 submatrices.
             float S0 = m11 * m22 - m12 * m21;
             float S1 = m11 * m23 - m13 * m21;
             float S2 = m11 * m24 - m14 * m21;
@@ -181,21 +180,21 @@ namespace fw
             float C1 = m31 * m43 - m33 * m41;
             float C0 = m31 * m42 - m32 * m41;
 
-            // If determinant equals 0, there is no inverse
+            // If determinant equals 0, there is no inverse.
             float det = S0 * C5 - S1 * C4 + S2 * C3 + S3 * C2 - S4 * C1 + S5 * C0;
             if( fabs(det) <= tolerance )
                 return false;
 
-            // Compute adjugate matrix
+            // Compute adjugate matrix.
             *this = MyMatrix(
-                 m22 * C5 - m23 * C4 + m24 * C3, -m12 * C5 + m13 * C4 - m14 * C3,
-                 m42 * S5 - m43 * S4 + m44 * S3, -m32 * S5 + m33 * S4 - m34 * S3,
+                m22 * C5 - m23 * C4 + m24 * C3, -m12 * C5 + m13 * C4 - m14 * C3,
+                m42 * S5 - m43 * S4 + m44 * S3, -m32 * S5 + m33 * S4 - m34 * S3,
 
                 -m21 * C5 + m23 * C2 - m24 * C1,  m11 * C5 - m13 * C2 + m14 * C1,
                 -m41 * S5 + m43 * S2 - m44 * S1,  m31 * S5 - m33 * S2 + m34 * S1,
 
-                 m21 * C4 - m22 * C2 + m24 * C0, -m11 * C4 + m12 * C2 - m14 * C0,
-                 m41 * S4 - m42 * S2 + m44 * S0, -m31 * S4 + m32 * S2 - m34 * S0,
+                m21 * C4 - m22 * C2 + m24 * C0, -m11 * C4 + m12 * C2 - m14 * C0,
+                m41 * S4 - m42 * S2 + m44 * S0, -m31 * S4 + m32 * S2 - m34 * S0,
 
                 -m21 * C3 + m22 * C1 - m23 * C0,  m11 * C3 - m12 * C1 + m13 * C0,
                 -m41 * S3 + m42 * S1 - m43 * S0,  m31 * S3 - m32 * S1 + m33 * S0 ) * (1 / det);
@@ -210,6 +209,6 @@ namespace fw
             return invmat;
         }
     };
-};
+}
 
 #endif //__MyMatrix_H__
